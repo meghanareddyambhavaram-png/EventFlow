@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>EventFlow – Large-Scale Event Management Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b1020;--card:#131a31;--bd:#25305a;--tx:#e8ecff;--mu:#93a0cf;--out:#0a0f22;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#f4f6ff;--card:#fff;--bd:#d6dcf5;--tx:#141a3a;--mu:#5a6590;--out:#eef1ff}}
+:root[data-theme=light]{--bg:#f4f6ff;--card:#fff;--bd:#d6dcf5;--tx:#141a3a;--mu:#5a6590;--out:#eef1ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 Sora,system-ui,sans-serif;overflow-x:hidden}
+.hero{position:relative;padding:72px 6vw 56px;overflow:hidden}
+.hero:before,.hero:after{content:"";position:absolute;width:520px;height:520px;border-radius:50%;filter:blur(110px);opacity:.35;z-index:0}
+.hero:before{background:#38bdf8;top:-200px;left:-120px}.hero:after{background:#f472b6;top:-120px;right:-160px}
+.hero>*{position:relative;z-index:1}
+h1{font-size:clamp(38px,7vw,84px);line-height:1;margin:0 0 16px;font-weight:800;letter-spacing:-.03em;background:linear-gradient(100deg,#38bdf8,#a78bfa 45%,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:640px;color:var(--mu);font-size:17px;margin:0 0 26px}
+.stats{display:flex;gap:28px;flex-wrap:wrap}.stats b{font-size:34px;display:block}.stats span{color:var(--mu);font-size:13px}
+.flow{margin-top:34px;height:46px;max-width:760px}
+.flow path{stroke-dasharray:6 8;animation:d 1.4s linear infinite}@keyframes d{to{stroke-dashoffset:-28}}
+@media(prefers-reduced-motion:reduce){.flow path{animation:none}}
+nav{position:sticky;top:0;z-index:5;display:flex;gap:8px;padding:12px 6vw;padding-top:calc(12px + env(safe-area-inset-top,0px));background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd);overflow-x:auto}
+nav button{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:7px 14px;border-radius:99px;font:600 13px Sora;cursor:pointer}
+nav button.on{background:var(--c,#a78bfa);color:#0b1020;border-color:transparent}
+main{padding:28px 6vw 70px}
+.mh{margin:34px 0 14px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.mh h2{margin:0;font-size:24px;color:var(--c)}.mh span{color:var(--mu);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,380px),1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--c);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:9px}
+.card h3{margin:0;font-size:16px}.card .u{color:var(--mu);font-size:13px;margin:0}
+label{font-size:12px;color:var(--mu);display:block;margin-bottom:2px}
+input{width:100%;background:var(--out);border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:8px 10px;font:13px 'JetBrains Mono',monospace}
+input:focus,button:focus-visible{outline:2px solid var(--c);outline-offset:1px}
+.run{align-self:flex-start;background:var(--c);color:#0b1020;border:0;border-radius:8px;padding:8px 16px;font:700 13px Sora;cursor:pointer}
+pre{margin:0;background:var(--out);border-radius:8px;padding:10px;font:12.5px/1.5 'JetBrains Mono',monospace;white-space:pre-wrap;word-break:break-word;color:var(--c);max-height:190px;overflow:auto}
+footer{text-align:center;color:var(--mu);padding:30px;font-size:13px}
+</style></head><body>
+<header class="hero"><h1>EventFlow</h1>
+<p>One platform for events, venues, volunteers and live registrations. Every feature below is powered by a real algorithm you can run on your own input.</p>
+<div class="stats"><div><b id="sa">0</b><span>live algorithm demos</span></div><div><b>6</b><span>modules (CO1–CO6)</span></div><div><b>1</b><span>event platform</span></div></div>
+<svg class="flow" viewBox="0 0 760 46"><g fill="none" stroke-width="2.5"><path d="M10 23 C120 -5 180 50 300 23 S 500 -5 600 23 S 720 40 750 23" stroke="#38bdf8"/><path d="M10 30 C120 52 200 0 320 30 S 520 52 620 30 S 730 10 750 30" stroke="#f472b6" opacity=".7"/></g></svg></header>
+<nav id="nav"></nav><main id="main"></main>
+<footer>EventFlow · Data Structures &amp; Algorithms project</footer>
+<script>
+const M=[
+["M1","String Algorithms","CO1","#38bdf8"],["M2","Suffix Structures","CO2","#a78bfa"],["M3","Advanced Dynamic Programming","CO3","#f472b6"],
+["M4","Network Flow","CO4","#34d399"],["M5","NP-Completeness & Approximation","CO5","#fbbf24"],["M6","Randomized & Parallel Algorithms","CO6","#fb7185"]];
+const N=s=>s.split(/[\s,]+/).filter(Boolean).map(Number);
+const G=s=>{const E=s.split(/[,;\n]+/).map(x=>x.trim().split(/\s+/)).filter(x=>x.length==2);return{E,V:[...new Set(E.flat())]}};
+const A=[];const add=(m,n,u,f,fn)=>A.push({m,n,u,f,fn});
+/* ---------- M1 ---------- */
+function kmp(t,p){let f=[0],k=0,r=[];for(let i=1;i<p.length;i++){while(k&&p[i]!=p[k])k=f[k-1];if(p[i]==p[k])k++;f[i]=k}k=0;for(let i=0;i<t.length;i++){while(k&&t[i]!=p[k])k=f[k-1];if(t[i]==p[k])k++;if(k==p.length){r.push(i-k+1);k=f[k-1]}}return r}
+add(0,"KMP","Search event names, registration codes and activity names",[["Text","Tech Summit 2026, Music Fest, Tech Expo, Tech Talk"],["Pattern","Tech"]],(t,p)=>{if(!p)return"Enter a pattern";const r=kmp(t,p);return`Found ${r.length} match(es) at index: ${r.join(", ")||"none"}`});
+add(0,"Z-Function","Find repeated event descriptions",[["Description","joinus joinus joinus"]],s=>{let n=s.length,Z=Array(n).fill(0),l=0,r=0;for(let i=1;i<n;i++){if(i<r)Z[i]=Math.min(r-i,Z[i-l]);while(i+Z[i]<n&&s[Z[i]]==s[i+Z[i]])Z[i]++;if(i+Z[i]>r){l=i;r=i+Z[i]}}let p=n;for(let i=1;i<n;i++)if(n%i==0&&Z[i]==n-i){p=i;break}return`Z = [${Z}]\n`+(p<n?`Repeats "${s.slice(0,p)}" ${n/p} times`:"No repetition: description is unique")});
+add(0,"Rabin-Karp","Search participant and booking codes with rolling hash",[["Booking log","BK1001 BK2045 BK1001 BK3310"],["Code","BK1001"]],(t,p)=>{const B=257,Mo=1000003,m=p.length;if(!m||m>t.length)return"No match";let h=0,H=0,pw=1,r=[],c=0;for(let i=0;i<m;i++){H=(H*B+p.charCodeAt(i))%Mo;h=(h*B+t.charCodeAt(i))%Mo;if(i)pw=pw*B%Mo}for(let i=0;i<=t.length-m;i++){if(h==H){c++;if(t.substr(i,m)==p)r.push(i)}h=((h-t.charCodeAt(i)*pw%Mo+Mo)*B+t.charCodeAt(i+m))%Mo}return`Matches at: ${r.join(", ")||"none"}\nHash hits checked: ${c}`});
+add(0,"Aho-Corasick","Detect many event keywords in one pass",[["Text","free parking and vip workshop with live music"],["Keywords (comma)","vip,workshop,music,free"]],(t,k)=>{const ws=k.split(",").map(x=>x.trim()).filter(Boolean),g=[{n:{},f:0,o:[]}];ws.forEach(w=>{let s=0;for(const c of w){if(!g[s].n[c]){g.push({n:{},f:0,o:[]});g[s].n[c]=g.length-1}s=g[s].n[c]}g[s].o.push(w)});let q=Object.values(g[0].n);while(q.length){let u=q.shift();for(const c in g[u].n){let v=g[u].n[c],f=g[u].f;while(f&&!g[f].n[c])f=g[f].f;g[v].f=g[f].n[c]||0;g[v].o=g[v].o.concat(g[g[v].f].o);q.push(v)}}let s=0,r=[];for(let i=0;i<t.length;i++){const c=t[i];while(s&&!g[s].n[c])s=g[s].f;s=g[s].n[c]||0;g[s].o.forEach(w=>r.push(`${w}@${i-w.length+1}`))}return`${r.length} hit(s): ${r.join(", ")||"none"}`});
+/* ---------- M2 ---------- */
+const SA=s=>[...s].map((_,i)=>i).sort((a,b)=>s.slice(a)<s.slice(b)?-1:1);
+const kasai=(s,sa)=>{const n=s.length,rk=[],l=Array(n).fill(0);let h=0;sa.forEach((p,i)=>rk[p]=i);for(let i=0;i<n;i++){if(rk[i]){const j=sa[rk[i]-1];while(i+h<n&&j+h<n&&s[i+h]==s[j+h])h++;l[rk[i]]=h;if(h)h--}else h=0}return l};
+add(1,"Suffix Array (SA-IS index)","Index event descriptions for fast search. SA-IS builds this in O(n); the demo builds the same array by sorting",[["Text","banana"],["Search for","ana"]],(s,q)=>{const sa=SA(s);let lo=0,hi=sa.length;while(lo<hi){const m=lo+hi>>1;s.slice(sa[m])<q?lo=m+1:hi=m}let c=[];for(let i=lo;i<sa.length&&s.slice(sa[i]).startsWith(q);i++)c.push(sa[i]);return`SA = [${sa}]\n"${q}" found at: ${c.sort((a,b)=>a-b).join(", ")||"none"}`});
+add(1,"LCP · Kasai","Find the longest common/repeated text in descriptions",[["Text","yoga class morning yoga class evening"]],s=>{const sa=SA(s),l=kasai(s,sa);let b=0,i=0;l.forEach((x,k)=>{if(x>b){b=x;i=k}});return`LCP = [${l}]\nLongest repeated: "${s.substr(sa[i],b)}" (${b} chars)`});
+add(1,"Suffix Automaton","Count distinct substrings and test substring queries",[["Text","eventflow"],["Query","flow"]],(s,q)=>{const st=[{l:0,k:-1,n:{}}];let last=0;for(const c of s){const cur=st.length;st.push({l:st[last].l+1,k:0,n:{}});let p=last;while(p>=0&&!st[p].n[c]){st[p].n[c]=cur;p=st[p].k}if(p>=0){const q=st[p].n[c];if(st[p].l+1==st[q].l)st[cur].k=q;else{const cl=st.length;st.push({l:st[p].l+1,k:st[q].k,n:{...st[q].n}});while(p>=0&&st[p].n[c]==q){st[p].n[c]=cl;p=st[p].k}st[q].k=st[cur].k=cl}}last=cur}let d=0;for(let i=1;i<st.length;i++)d+=st[i].l-st[st[i].k].l;let u=0;for(const c of q){u=st[u]?.n[c];if(u===undefined)break}return`States: ${st.length}\nDistinct substrings: ${d}\n"${q}" is ${u===undefined?"NOT ":""}a substring`});
+/* ---------- M3 ---------- */
+const ed=(a,b,t)=>{const d=[...Array(a.length+1)].map((_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++){d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]!=b[j-1]));if(t&&i>1&&j>1&&a[i-1]==b[j-2]&&a[i-2]==b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1)}return d[a.length][b.length]};
+add(2,"Levenshtein / Damerau","Correct participant and event names",[["Typed","Concret Fesitval"],["Official","Concert Festival"]],(a,b)=>`Levenshtein: ${ed(a,b)}\nDamerau-Levenshtein: ${ed(a,b,1)} (swaps count as 1)`);
+add(2,"Bitmask DP","Pick the best combination: assign staff to activities at lowest cost",[["Cost matrix (rows ; )","4 2 8; 3 7 5; 6 4 3"]],s=>{const C=s.split(";").map(N),n=C.length,dp=Array(1<<n).fill(1e9),par=[];dp[0]=0;for(let m=0;m<1<<n;m++){let i=m.toString(2).replace(/0/g,"").length;if(i>=n||dp[m]>=1e9)continue;for(let j=0;j<n;j++)if(!(m>>j&1)){const nm=m|1<<j;if(dp[m]+C[i][j]<dp[nm]){dp[nm]=dp[m]+C[i][j];par[nm]=[m,j]}}}let m=(1<<n)-1,r=[];while(m){r.unshift(par[m][1]);m=par[m][0]}return`Min cost: ${dp[(1<<n)-1]}\n`+r.map((j,i)=>`Staff ${i+1} → Activity ${j+1}`).join("\n")});
+add(2,"Matrix-Chain Multiplication","Order event-data joins to minimise work",[["Dimensions","10 30 5 60 8"]],s=>{const d=N(s),n=d.length-1,m=[...Array(n)].map(()=>Array(n).fill(0)),sp=[...Array(n)].map(()=>[]);for(let L=2;L<=n;L++)for(let i=0;i+L<=n;i++){const j=i+L-1;m[i][j]=1/0;for(let k=i;k<j;k++){const c=m[i][k]+m[k+1][j]+d[i]*d[k+1]*d[j+1];if(c<m[i][j]){m[i][j]=c;sp[i][j]=k}}}const pr=(i,j)=>i==j?"A"+(i+1):`(${pr(i,sp[i][j])} × ${pr(sp[i][j]+1,j)})`;return`Min multiplications: ${m[0][n-1]}\nBest order: ${pr(0,n-1)}`});
+add(2,"Optimal Binary Search Tree","Fast lookups for frequently accessed events",[["Events","Expo Fest Talk Gala"],["Access counts","34 8 50 20"]],(k,f)=>{const K=k.split(/\s+/),F=N(f),n=F.length,e=[...Array(n)].map(()=>Array(n).fill(0)),rt=[...Array(n)].map(()=>[]);for(let L=1;L<=n;L++)for(let i=0;i+L<=n;i++){const j=i+L-1;let s=0;for(let x=i;x<=j;x++)s+=F[x];e[i][j]=1/0;for(let r=i;r<=j;r++){const c=(r>i?e[i][r-1]:0)+(r<j?e[r+1][j]:0)+s;if(c<e[i][j]){e[i][j]=c;rt[i][j]=r}}}return`Min expected cost: ${e[0][n-1]}\nRoot of tree: ${K[rt[0][n-1]]}`});
+/* ---------- M4 ---------- */
+const FL="S G1 10, S G2 8, G1 H1 6, G1 H2 5, G2 H2 7, H1 T 8, H2 T 9";
+function flow(txt,mode){const id={},E=txt.split(/[,;\n]+/).map(x=>x.trim().split(/\s+/)).filter(x=>x.length==3);let n=0;E.forEach(e=>[e[0],e[1]].forEach(x=>{if(!(x in id))id[x]=n++}));const c=[...Array(n)].map(()=>Array(n).fill(0));E.forEach(e=>c[id[e[0]]][id[e[1]]]+=+e[2]);const s=0,t=id.T??n-1;let F=0,ops=0;
+if(mode=="ff"){const dfs=(u,f,v)=>{if(u==t)return f;v[u]=1;for(let w=0;w<n;w++)if(!v[w]&&c[u][w]>0){const d=dfs(w,Math.min(f,c[u][w]),v);if(d){c[u][w]-=d;c[w][u]+=d;return d}}return 0};let d;while(d=dfs(s,1e9,[])){F+=d;ops++}return`Max flow: ${F}\nDFS augmenting paths: ${ops}`}
+if(mode=="ek"){for(;;){const p=Array(n).fill(-1);p[s]=s;const q=[s];while(q.length&&p[t]<0){const u=q.shift();for(let w=0;w<n;w++)if(p[w]<0&&c[u][w]>0){p[w]=u;q.push(w)}}if(p[t]<0)break;let b=1e9;for(let v=t;v!=s;v=p[v])b=Math.min(b,c[p[v]][v]);for(let v=t;v!=s;v=p[v]){c[p[v]][v]-=b;c[v][p[v]]+=b}F+=b;ops++}return`Max flow (venue capacity): ${F}\nShortest augmenting paths: ${ops}`}
+let L,it;const bfs=()=>{L=Array(n).fill(-1);L[s]=0;const q=[s];while(q.length){const u=q.shift();for(let w=0;w<n;w++)if(L[w]<0&&c[u][w]>0){L[w]=L[u]+1;q.push(w)}}return L[t]>=0};const dfs=(u,f)=>{if(u==t)return f;for(;it[u]<n;it[u]++){const w=it[u];if(L[w]==L[u]+1&&c[u][w]>0){const d=dfs(w,Math.min(f,c[u][w]));if(d){c[u][w]-=d;c[w][u]+=d;return d}}}return 0};while(bfs()){it=Array(n).fill(0);let d;while(d=dfs(s,1e9))F+=d;ops++}return`Max flow: ${F}\nBFS level phases: ${ops}`}
+add(3,"Ford-Fulkerson","Model participant flow through event facilities (edges: from to capacity; S = source, T = sink)",[["Network",FL]],s=>flow(s,"ff"));
+add(3,"Edmonds-Karp","Venue-capacity analysis with shortest augmenting paths",[["Network",FL]],s=>flow(s,"ek"));
+add(3,"Dinic's Algorithm","Larger event-flow networks using level graphs",[["Network",FL]],s=>flow(s,"dn"));
+function match(s){const{E}=G(s),adj={};E.forEach(([a,b])=>(adj[a]=adj[a]||[]).push(b));const L=Object.keys(adj),mt={},tr=(u,v)=>{for(const w of adj[u]){if(v.has(w))continue;v.add(w);if(!mt[w]||tr(mt[w],v)){mt[w]=u;return 1}}return 0};L.forEach(u=>tr(u,new Set()));return{adj,L,mt}}
+const SV="Asha Yoga, Asha DJ, Ben DJ, Ben Registration, Chen Registration, Chen Yoga, Dev Registration";
+add(3,"Bipartite Matching","Assign volunteers to eligible activities (edges: volunteer activity)",[["Eligibility",SV]],s=>{const{mt}=match(s);return`Assigned ${Object.keys(mt).length} volunteers:\n`+Object.entries(mt).map(([a,v])=>`${v} → ${a}`).join("\n")});
+add(3,"König's Theorem","Smallest set of people/activities covering every assignment conflict",[["Eligibility",SV]],s=>{const{adj,L,mt}=match(s),mL=new Set(Object.values(mt)),vL=new Set(L.filter(u=>!mL.has(u))),vR=new Set(),st=[...vL];while(st.length){const u=st.pop();for(const w of adj[u])if(!vR.has(w)){vR.add(w);if(mt[w]&&!vL.has(mt[w])){vL.add(mt[w]);st.push(mt[w])}}}const cv=[...L.filter(u=>!vL.has(u)),...vR];return`Max matching = ${Object.keys(mt).length}\nMin vertex cover = ${cv.length}: ${cv.join(", ")}\n(equal sizes ✔ König)`});
+/* ---------- M5 ---------- */
+const CN=s=>s.split(";").map(c=>N(c).filter(x=>x));
+const sat=(C)=>{const nv=Math.max(0,...C.flat().map(Math.abs));if(nv>16)return null;for(let m=0;m<1<<nv;m++)if(C.every(c=>c.some(l=>(l>0)==!!(m>>Math.abs(l)-1&1))))return[...Array(nv)].map((_,i)=>`x${i+1}=${m>>i&1?"T":"F"}`).join(" ")||"trivial";return false};
+const SC="1 2 3; -1 2 -3; 1 -2 3";
+add(4,"SAT / 3-SAT","Encode event-scheduling constraints as clauses (variable = event runs in slot; clauses separated by ;)",[["Clauses",SC]],s=>{const r=sat(CN(s));return r===null?"Use at most 16 variables":r?"Satisfiable → "+r:"Unsatisfiable: constraints conflict"});
+add(4,"3-SAT → CLIQUE","Transform the constraint problem into a graph problem",[["Clauses",SC]],s=>{const C=CN(s),V=[];C.forEach((c,i)=>c.forEach(l=>V.push([i,l])));let ed=0;const ok=(a,b)=>a[0]!=b[0]&&a[1]!=-b[1];for(let i=0;i<V.length;i++)for(let j=i+1;j<V.length;j++)if(ok(V[i],V[j]))ed++;const k=C.length,pick=[],go=(i)=>{if(i==k)return 1;for(const v of V.filter(v=>v[0]==i))if(pick.every(p=>ok(p,v))){pick.push(v);if(go(i+1))return 1;pick.pop()}return 0};const f=go(0);return`Graph: ${V.length} vertices, ${ed} edges, target clique size k = ${k}\n`+(f?`Clique found: literals ${pick.map(p=>p[1])}\n→ formula is satisfiable`:`No ${k}-clique → formula is unsatisfiable`)});
+const GR="a b, b c, a c, c d, d e, c e, a d";
+const subsets=V=>{const r=[];for(let m=0;m<1<<V.length;m++)r.push(V.filter((_,i)=>m>>i&1));return r};
+add(4,"CLIQUE → INDEPENDENT-SET → VERTEX-COVER","Find conflict-free activity groups (edges = activities that clash; max 14 nodes)",[["Graph",GR]],s=>{const{E,V}=G(s);if(V.length>14)return"Max 14 nodes";const ad=new Set(E.map(e=>e.join("|")+"|"+e.slice().reverse().join("|")).join("|").split("|").length&&E.flatMap(e=>[e[0]+"~"+e[1],e[1]+"~"+e[0]]));let best=[];subsets(V).forEach(S=>{if(S.length>best.length&&S.every((a,i)=>S.slice(i+1).every(b=>ad.has(a+"~"+b))))best=S});return`Max clique in G: {${best}} (size ${best.length})\n= Independent set in complement(G)\n→ Vertex cover of complement(G): {${V.filter(v=>!best.includes(v))}}`});
+add(4,"Vertex-Cover 2-Approximation","Small set of resources that covers every conflict",[["Conflict graph",GR]],s=>{const{E,V}=G(s),cov=new Set();E.forEach(([a,b])=>{if(!cov.has(a)&&!cov.has(b)){cov.add(a);cov.add(b)}});let opt=V.length;if(V.length<=14)subsets(V).forEach(S=>{if(S.length<opt&&E.every(([a,b])=>S.includes(a)||S.includes(b)))opt=S.length});return`Approx cover (${cov.size}): {${[...cov]}}\nOptimal size: ${opt}\nRatio ${(cov.size/opt).toFixed(2)} ≤ 2 ✔`});
+/* ---------- M6 ---------- */
+const qs=a=>{if(a.length<2)return a;const p=a[Math.random()*a.length|0];return[...qs(a.filter(x=>x<p)),...a.filter(x=>x==p),...qs(a.filter(x=>x>p))]};
+add(5,"Randomized QuickSort","Rank events or participants by score",[["Scores","88 42 97 15 63 71 30"]],s=>`Ranked (high → low): ${qs(N(s)).reverse().join(", ")}`);
+add(5,"Reservoir Sampling","Pick a fair sample from a never-ending registration stream",[["Stream size","10000"],["Sample size k","5"]],(n,k)=>{const R=[];for(let i=0;i<+n;i++){if(i<+k)R.push(i);else{const j=Math.random()*(i+1)|0;if(j<+k)R[j]=i}}return`Sampled registrations: ${R.map(x=>"REG-"+x).join(", ")}\nMemory used: ${k} items (stream length ${n})`});
+const pw=(b,e,m)=>{let r=1n;b%=m;while(e>0n){if(e&1n)r=r*b%m;b=b*b%m;e>>=1n}return r};
+const mr=n=>{if(n<2n)return false;const bs=[2n,3n,5n,7n,11n,13n,17n,19n,23n,29n,31n,37n];for(const p of bs){if(n==p)return true;if(n%p==0n)return false}let d=n-1n,r=0;while(d%2n==0n){d/=2n;r++}for(const a of bs){let x=pw(a,d,n);if(x==1n||x==n-1n)continue;let ok=0;for(let i=1;i<r;i++){x=x*x%n;if(x==n-1n){ok=1;break}}if(!ok)return false}return true};
+add(5,"Miller-Rabin","Primality tests on large ticket / hash numbers",[["Numbers","561 1000000007 982451653 600851475143"]],s=>N(s.replace(/\d+/g,m=>m+" ")).length&&s.split(/[\s,]+/).filter(Boolean).map(x=>`${x}: ${mr(BigInt(x))?"prime":"composite"}`).join("\n"));
+add(5,"Blelloch Scan","Cumulative registration counts in parallel",[["Registrations per hour","3 1 7 0 4 1 6 3"]],s=>{const a=N(s);let n=1;while(n<a.length)n*=2;const x=[...a,...Array(n-a.length).fill(0)];for(let d=1;d<n;d*=2)for(let i=0;i<n;i+=2*d)x[i+2*d-1]+=x[i+d-1];x[n-1]=0;for(let d=n/2;d>=1;d/=2)for(let i=0;i<n;i+=2*d){const t=x[i+d-1];x[i+d-1]=x[i+2*d-1];x[i+2*d-1]+=t}const ex=x.slice(0,a.length);return`Exclusive scan: ${ex}\nRunning total:  ${ex.map((v,i)=>v+a[i])}`});
+add(5,"Parallel Reduce","Event statistics (sum) via a reduction tree",[["Values","5 3 8 2 9 1 4 7"]],s=>{let a=N(s),r=1,o="Round 0: "+a;while(a.length>1){const b=[];for(let i=0;i<a.length;i+=2)b.push(a[i]+(a[i+1]??0));a=b;o+=`\nRound ${r++}: `+a}return o+`\nTotal = ${a[0]}`});
+add(5,"Brent's Theorem","Predict run time of parallel event-data processing",[["Work W (operations)","1000000"],["Depth D (critical path)","20"],["Processors p","8"]],(w,d,p)=>{const T=+w/+p+ +d;return`T_p ≤ W/p + D = ${(+w/+p).toFixed(0)} + ${d} = ${T.toFixed(0)} steps\nSpeedup ≥ ${(( +w+ +d)/T).toFixed(2)}× (vs. sequential W + D)`});
+/* ---------- UI ---------- */
+const main=document.getElementById("main"),nav=document.getElementById("nav");
+document.getElementById("sa").textContent=A.length;
+M.forEach((m,mi)=>{const sec=document.createElement("section");sec.id=m[0];sec.style.setProperty("--c",m[3]);sec.innerHTML=`<div class="mh"><h2>${m[0]} · ${m[1]}</h2><span>${m[2]}</span></div><div class="grid"></div>`;main.append(sec);const g=sec.querySelector(".grid");
+A.filter(a=>a.m==mi).forEach(a=>{const c=document.createElement("div");c.className="card";c.innerHTML=`<h3>${a.n}</h3><p class="u">${a.u}</p>`+a.f.map((f,i)=>`<div><label>${f[0]}</label><input value="${f[1].replace(/"/g,"&quot;")}" aria-label="${f[0]}"></div>`).join("")+`<button class="run">Run</button><pre></pre>`;g.append(c);
+const go=()=>{const v=[...c.querySelectorAll("input")].map(i=>i.value);try{c.querySelector("pre").textContent=a.fn(...v)}catch(e){c.querySelector("pre").textContent="Check your input format."}};c.querySelector(".run").onclick=go;c.querySelectorAll("input").forEach(i=>i.onkeydown=e=>e.key=="Enter"&&go());go()});
+const b=document.createElement("button");b.textContent=m[0]+" "+m[1].split(" ")[0];b.style.setProperty("--c",m[3]);b.onclick=()=>{[...nav.children].forEach(x=>x.classList.remove("on"));b.classList.add("on");document.querySelectorAll("main section").forEach(s=>s.style.display=s.id==m[0]?"":"none")};nav.append(b)});
+const all=document.createElement("button");all.textContent="All modules";all.classList.add("on");all.onclick=()=>{[...nav.children].forEach(x=>x.classList.remove("on"));all.classList.add("on");document.querySelectorAll("main section").forEach(s=>s.style.display="")};nav.prepend(all);
+</script></body></html>

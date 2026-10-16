@@ -1,0 +1,98 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>EventFlow – Event Management Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b1020;--card:#131a31;--bd:#25305a;--tx:#e8ecff;--mu:#93a0cf;--in:#0a0f22;--ac:#7c8cff;--ok:#34d399;--bad:#fb7185;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#f4f6ff;--card:#fff;--bd:#d6dcf5;--tx:#141a3a;--mu:#5a6590;--in:#eef1ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 Sora,system-ui,sans-serif;min-height:100vh}
+h1,h2,h3{margin:0}.g{background:linear-gradient(100deg,#38bdf8,#a78bfa,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+#auth{max-width:400px;margin:8vh auto;padding:0 18px}#auth h1{font-size:46px;letter-spacing:-.03em}#auth p{color:var(--mu)}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px}
+input,select,textarea{width:100%;background:var(--in);border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:9px 10px;font:inherit;margin:3px 0 9px}
+label{font-size:12px;color:var(--mu)}input:focus,button:focus-visible,select:focus{outline:2px solid var(--ac)}
+button{background:var(--ac);color:#0b1020;border:0;border-radius:8px;padding:8px 14px;font:700 13px Sora;cursor:pointer}
+button.s{background:transparent;color:var(--tx);border:1px solid var(--bd)}button.d{background:var(--bad)}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 5vw;border-bottom:1px solid var(--bd)}header h2{font-size:22px;margin-right:auto}
+nav{display:flex;gap:8px;padding:12px 5vw;overflow-x:auto}nav button{flex:none;background:var(--card);color:var(--tx);border:1px solid var(--bd)}nav button.on{background:var(--ac);color:#0b1020}
+#view{padding:6px 5vw 60px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+.stat b{font-size:30px;display:block}.stat span,.mu{color:var(--mu);font-size:12px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--bd);color:var(--mu);margin-right:4px}.ok{color:var(--ok)}.bad{color:var(--bad)}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--bd);white-space:nowrap}th{color:var(--mu);font-weight:600;font-size:12px}
+.bar{height:8px;border-radius:4px;background:linear-gradient(90deg,#38bdf8,#f472b6);margin-top:4px}
+pre{background:var(--in);border-radius:8px;padding:10px;white-space:pre-wrap;font:12px/1.5 ui-monospace,monospace;margin:6px 0 0}
+.algo{color:var(--ac);font-size:11px}#toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ac);color:#0b1020;padding:10px 18px;border-radius:99px;font-weight:700;display:none}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
+</style></head><body>
+<div id="auth"><h1 class="g">EventFlow</h1><p>Sign in to manage or join events.</p>
+<div class="box"><h3 id="at">Login</h3><label>Username</label><input id="au" autocomplete="username"><label>Password</label><input id="ap" type="password" autocomplete="current-password">
+<div id="sg" style="display:none"><label>Full name</label><input id="an"></div>
+<div class="row"><button onclick="auth()" id="ab">Login</button><button class="s" onclick="sw()" id="as">Create account</button></div></div>
+<div class="box mu">Demo accounts<br>Admin: <b>admin</b> / <b>admin123</b><br>User: <b>user</b> / <b>user123</b></div></div>
+<div id="app" style="display:none"><header><h2 class="g">EventFlow</h2><span id="who" class="mu"></span><a class="mu" href="lab.html">Algorithm lab</a><button class="s" onclick="out()">Log out</button></header><nav id="nav"></nav><div id="view"></div></div>
+<div id="toast"></div>
+<script>
+const Es=s=>String(s??"").replace(/[&<>"']/g,c=>"&#"+c.charCodeAt(0)+";"),$=i=>document.getElementById(i),V=i=>$(i).value.trim();
+const seed=()=>({n:4,users:[{u:"admin",p:"admin123",role:"admin",name:"Administrator"},{u:"user",p:"user123",role:"user",name:"Demo User"}],
+venues:[{id:1,name:"Grand Hall",cap:3},{id:2,name:"Open Arena",cap:6}],
+events:[{id:1,name:"Tech Summit 2026",date:"2026-11-05",s:"09:00",e:"12:00",v:1,cap:3,desc:"Keynotes on AI and cloud with live demos",sk:"tech,av"},
+{id:2,name:"Music Fest Night",date:"2026-11-05",s:"11:00",e:"14:00",v:1,cap:4,desc:"Live music, food stalls and free parking",sk:"music,av"},
+{id:3,name:"Yoga Morning",date:"2026-11-06",s:"07:00",e:"08:30",v:2,cap:5,desc:"Beginner yoga class on the lawn",sk:"yoga"},
+{id:4,name:"Startup Expo",date:"2026-11-07",s:"10:00",e:"17:00",v:2,cap:6,desc:"Pitch stage with investors and tech demos",sk:"tech,registration"}],
+staff:[{id:1,name:"Asha",sk:"av,yoga"},{id:2,name:"Ben",sk:"music,av"},{id:3,name:"Chen",sk:"tech,registration"},{id:4,name:"Dev",sk:"registration"}],
+regs:[{id:1,code:"BK0001",eid:1,u:"user"},{id:2,code:"BK0002",eid:3,u:"user"},{id:3,code:"BK0003",eid:1,u:"admin"}]});
+let S;try{S=JSON.parse(localStorage.ef)}catch{}S=S||seed();const save=()=>{try{localStorage.ef=JSON.stringify(S)}catch{}};
+let me=null,tab="",Q="";try{me=JSON.parse(sessionStorage.efm||"null")}catch{}
+const toast=m=>{const t=$("toast");t.textContent=m;t.style.display="block";setTimeout(()=>t.style.display="none",2200)};
+/* ===== algorithms ===== */
+function kmp(t,p){if(!p)return[];const f=[0];let k=0,r=[];for(let i=1;i<p.length;i++){while(k&&p[i]!=p[k])k=f[k-1];if(p[i]==p[k])k++;f[i]=k}k=0;for(let i=0;i<t.length;i++){while(k&&t[i]!=p[k])k=f[k-1];if(t[i]==p[k])k++;if(k==p.length){r.push(i-k+1);k=f[k-1]}}return r}
+function rk(t,p){const B=257,M=1000003,m=p.length;if(!m||m>t.length)return[];let h=0,H=0,pw=1,r=[];for(let i=0;i<m;i++){H=(H*B+p.charCodeAt(i))%M;h=(h*B+t.charCodeAt(i))%M;if(i)pw=pw*B%M}for(let i=0;i<=t.length-m;i++){if(h==H&&t.substr(i,m)==p)r.push(i);h=((h-t.charCodeAt(i)*pw%M+M)*B+t.charCodeAt(i+m))%M}return r}
+function aho(t,ws){const g=[{n:{},f:0,o:0}];ws.forEach(w=>{let s=0;for(const c of w){if(!g[s].n[c]){g.push({n:{},f:0,o:0});g[s].n[c]=g.length-1}s=g[s].n[c]}g[s].o++});let q=Object.values(g[0].n);while(q.length){const u=q.shift();for(const c in g[u].n){const v=g[u].n[c];let f=g[u].f;while(f&&!g[f].n[c])f=g[f].f;g[v].f=g[f].n[c]||0;g[v].o+=g[g[v].f].o;q.push(v)}}let s=0,h=0;for(const c of t){while(s&&!g[s].n[c])s=g[s].f;s=g[s].n[c]||0;h+=g[s].o}return h}
+function lev(a,b){const d=[...Array(a.length+1)].map((_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++){d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]!=b[j-1]));if(i>1&&j>1&&a[i-1]==b[j-2]&&a[i-2]==b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1)}return d[a.length][b.length]}
+function zper(s){const n=s.length,Z=Array(n).fill(0);let l=0,r=0;for(let i=1;i<n;i++){if(i<r)Z[i]=Math.min(r-i,Z[i-l]);while(i+Z[i]<n&&s[Z[i]]==s[i+Z[i]])Z[i]++;if(i+Z[i]>r){l=i;r=i+Z[i]}}for(let i=1;i<n;i++)if(n%i==0&&Z[i]==n-i)return i;return n}
+const qs=(a,k)=>{if(a.length<2)return a;const p=k(a[Math.random()*a.length|0]);return[...qs(a.filter(x=>k(x)<p),k),...a.filter(x=>k(x)==p),...qs(a.filter(x=>k(x)>p),k)]};
+const resv=(a,k)=>{const R=[];a.forEach((x,i)=>{if(i<k)R.push(x);else{const j=Math.random()*(i+1)|0;if(j<k)R[j]=x}});return R};
+function blel(a){let n=1;while(n<a.length)n*=2;const x=[...a,...Array(n-a.length).fill(0)];for(let d=1;d<n;d*=2)for(let i=0;i<n;i+=2*d)x[i+2*d-1]+=x[i+d-1];x[n-1]=0;for(let d=n/2;d>=1;d/=2)for(let i=0;i<n;i+=2*d){const t=x[i+d-1];x[i+d-1]=x[i+2*d-1];x[i+2*d-1]+=t}return x.slice(0,a.length).map((v,i)=>v+a[i])}
+function ek(E,s,t){const id={};let n=0;[s,t,...E.flatMap(e=>[e[0],e[1]])].forEach(x=>{if(!(x in id))id[x]=n++});const c=[...Array(n)].map(()=>Array(n).fill(0));E.forEach(e=>c[id[e[0]]][id[e[1]]]+=e[2]);const S0=id[s],T=id[t];let F=0;for(;;){const p=Array(n).fill(-1);p[S0]=S0;const q=[S0];while(q.length&&p[T]<0){const u=q.shift();for(let w=0;w<n;w++)if(p[w]<0&&c[u][w]>0){p[w]=u;q.push(w)}}if(p[T]<0)return F;let b=1e9;for(let v=T;v!=S0;v=p[v])b=Math.min(b,c[p[v]][v]);for(let v=T;v!=S0;v=p[v]){c[p[v]][v]-=b;c[v][p[v]]+=b}F+=b}}
+function match(E){const adj={};E.forEach(([a,b])=>(adj[a]=adj[a]||[]).push(b));const L=Object.keys(adj),mt={},tr=(u,v)=>{for(const w of adj[u]){if(v.has(w))continue;v.add(w);if(!mt[w]||tr(mt[w],v)){mt[w]=u;return 1}}return 0};L.forEach(u=>tr(u,new Set()));const mL=new Set(Object.values(mt)),vL=new Set(L.filter(u=>!mL.has(u))),vR=new Set(),st=[...vL];while(st.length){const u=st.pop();for(const w of adj[u])if(!vR.has(w)){vR.add(w);if(mt[w]&&!vL.has(mt[w])){vL.add(mt[w]);st.push(mt[w])}}}return{mt,cover:[...L.filter(u=>!vL.has(u)),...vR]}}
+function vc2(E){const c=new Set();E.forEach(([a,b])=>{if(!c.has(a)&&!c.has(b)){c.add(a);c.add(b)}});return[...c]}
+/* ===== helpers ===== */
+const ev=id=>S.events.find(e=>e.id==id),ven=id=>S.venues.find(v=>v.id==id)?.name||"?",cnt=id=>S.regs.filter(r=>r.eid==id).length;
+const ov=(a,b)=>a.date==b.date&&a.s<b.e&&b.s<a.e,tag=t=>`<span class="tag">${Es(t)}</span>`;
+const tbl=(h,r)=>`<div class="tw"><table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${r.map(x=>`<tr>${x.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</table></div>`;
+/* ===== auth ===== */
+let su=0;function sw(){su=!su;$("sg").style.display=su?"":"none";$("at").textContent=$("ab").textContent=su?"Sign up":"Login";$("as").textContent=su?"I have an account":"Create account"}
+function auth(){const u=V("au"),p=$("ap").value;if(su){if(!u||p.length<4||!V("an"))return toast("Fill all fields; password needs 4+ characters");if(S.users.some(x=>x.u==u))return toast("Username already taken");S.users.push({u,p,role:"user",name:V("an")});save();toast("Account created. You can log in now");return sw()}
+const x=S.users.find(x=>x.u==u&&x.p==p);if(!x)return toast("Wrong username or password");me={u:x.u,role:x.role,name:x.name};try{sessionStorage.efm=JSON.stringify(me)}catch{}boot()}
+function out(){me=null;try{sessionStorage.efm=""}catch{}boot()}
+function boot(){$("auth").style.display=me?"none":"";$("app").style.display=me?"":"none";if(!me)return;$("who").textContent=`${me.name} · ${me.role}`;const T=me.role=="admin"?[["dash","Dashboard"],["ev","Events"],["ven","Venues"],["stf","Volunteers"],["bk","Bookings"],["opt","Optimizer"]]:[["browse","Browse events"],["mine","My bookings"]];tab=T[0][0];$("nav").innerHTML=T.map(t=>`<button onclick="go('${t[0]}')" data-t="${t[0]}">${t[1]}</button>`).join("");go(tab)}
+function go(t){tab=t;document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.t==t));$("view").innerHTML=({dash,ev:evs,ven:vens,stf,bk,opt,browse,mine})[t]()}
+/* ===== views ===== */
+function card(e){const left=e.cap-cnt(e.id),mine=S.regs.some(r=>r.eid==e.id&&r.u==me.u);return`<div class="box"><h3>${Es(e.name)}</h3><div class="mu">${e.date} · ${e.s}–${e.e} · ${Es(ven(e.v))}</div><p>${Es(e.desc)}</p>${e.sk.split(",").map(tag).join("")}<p class="${left?"ok":"bad"}">${left?left+" seats left":"Full"}</p>${me.role=="user"?(mine?"<button class='s' disabled>Registered</button>":`<button onclick="reg(${e.id})" ${left?"":"disabled"}>Register</button>`):""}</div>`}
+function browse(){const ws=Q.toLowerCase().split(/\s+/).filter(Boolean);let L=S.events.filter(e=>!ws.length||aho((e.name+" "+e.desc+" "+e.sk).toLowerCase(),ws));let h="";if(ws.length&&!L.length){const vocab=[...new Set(S.events.flatMap(e=>(e.name+" "+e.desc).toLowerCase().split(/\W+/)))].filter(Boolean);const sg=ws.map(w=>vocab.map(v=>[lev(w,v),v]).sort((a,b)=>a[0]-b[0])[0]).filter(x=>x&&x[0]<=2).map(x=>x[1]);h=`<p class="mu">No match. ${sg.length?`Did you mean <b>${Es(sg.join(" "))}</b>? <button class="s" onclick="Q='${Es(sg.join(" "))}';go('browse')">Search it</button>`:""}</p>`}
+return`<div class="box"><label>Search events <span class="algo">Aho-Corasick multi-keyword · Levenshtein spell-fix</span></label><input id="q" value="${Es(Q)}" placeholder="try: yoga or tehc" oninput="Q=this.value;clearTimeout(window.tm);window.tm=setTimeout(()=>{go('browse');$('q').focus();$('q').setSelectionRange(Q.length,Q.length)},350)"></div>${h}<div class="grid">${L.map(card).join("")}</div>`}
+function reg(id){const e=ev(id);if(cnt(id)>=e.cap)return toast("Event is full");const mine=S.regs.filter(r=>r.u==me.u).map(r=>ev(r.eid));const c=mine.find(m=>ov(m,e));if(c&&!confirm(`This overlaps with "${c.name}". Register anyway?`))return;const code="BK"+String(S.n++).padStart(4,"0");S.regs.push({id:S.n,code,eid:id,u:me.u});save();toast("Booked! Code "+code);go(tab)}
+function mine(){const R=S.regs.filter(r=>r.u==me.u);return R.length?`<div class="box">${tbl(["Code","Event","When","Venue",""],R.map(r=>{const e=ev(r.eid);return[r.code,Es(e.name),e.date+" "+e.s,Es(ven(e.v)),`<button class="d" onclick="cancel(${r.id})">Cancel</button>`]}))}</div>`:`<div class="box">No bookings yet. Open "Browse events" to join one.</div>`}
+function cancel(id){S.regs=S.regs.filter(r=>r.id!=id);save();toast("Booking cancelled");go(tab)}
+function dash(){const C=S.events.map(e=>cnt(e.id)),mx=Math.max(1,...C),run=blel(C),rank=qs(S.events.map((e,i)=>({n:e.name,c:C[i]})),x=>-x.c),lucky=resv(S.regs,2);
+const dup=[];S.events.forEach((a,i)=>{if(zper(a.desc)<a.desc.length)dup.push(a.name+" repeats itself");S.events.slice(i+1).forEach(b=>{if(kmp(a.desc,b.desc).length||kmp(b.desc,a.desc).length)dup.push(`${a.name} ≈ ${b.name}`)})});
+return`<div class="grid"><div class="box stat"><b>${S.events.length}</b><span>events</span></div><div class="box stat"><b>${S.regs.length}</b><span>registrations</span></div><div class="box stat"><b>${S.venues.length}</b><span>venues</span></div><div class="box stat"><b>${S.staff.length}</b><span>volunteers</span></div></div>
+<div class="grid"><div class="box"><h3>Popularity ranking</h3><span class="algo">Randomized QuickSort</span>${rank.map(x=>`<div>${Es(x.n)} <b>${x.c}</b><div class="bar" style="width:${x.c/mx*100}%"></div></div>`).join("")}</div>
+<div class="box"><h3>Cumulative registrations</h3><span class="algo">Blelloch scan · Parallel reduce</span><pre>Per event: ${C}\nRunning total: ${run}\nTotal (reduce tree): ${run[run.length-1]}</pre></div>
+<div class="box"><h3>Audit draw</h3><span class="algo">Reservoir sampling (O(1) memory over the stream)</span><pre>${lucky.map(r=>r.code+" · "+Es(r.u)).join("\n")||"No registrations"}</pre><button class="s" onclick="go('dash')">Draw again</button></div>
+<div class="box"><h3>Duplicate descriptions</h3><span class="algo">Z-function · KMP</span><pre>${dup.length?Es(dup.join("\n")):"No duplicates found"}</pre></div></div>`}
+function evs(){return`<div class="box"><h3>Add event</h3><div class="row"><div><label>Name</label><input id="en"></div><div><label>Date</label><input id="ed" type="date"></div><div><label>Start</label><input id="es" type="time" value="09:00"></div><div><label>End</label><input id="ee" type="time" value="11:00"></div></div><div class="row"><div><label>Venue</label><select id="evn">${S.venues.map(v=>`<option value="${v.id}">${Es(v.name)}</option>`).join("")}</select></div><div><label>Capacity</label><input id="ec" type="number" value="10"></div><div><label>Skills needed (comma)</label><input id="ek" placeholder="av,tech"></div></div><label>Description</label><textarea id="ex" rows="2"></textarea><button onclick="addEv()">Save event</button></div>
+<div class="box">${tbl(["Event","Date","Time","Venue","Cap","Booked",""],S.events.map(e=>[Es(e.name),e.date,e.s+"–"+e.e,Es(ven(e.v)),e.cap,cnt(e.id),`<button class="d" onclick="delEv(${e.id})">Delete</button>`]))}</div>`}
+function addEv(){const n=V("en"),d=V("ed");if(!n||!d||!S.venues.length||V("es")>=V("ee"))return toast("Name, date, valid times and a venue are required");S.events.push({id:Date.now(),name:n,date:d,s:V("es"),e:V("ee"),v:+V("evn"),cap:+V("ec")||1,desc:V("ex"),sk:V("ek").toLowerCase().replace(/\s/g,"")});save();toast("Event added");go("ev")}
+function delEv(id){S.events=S.events.filter(e=>e.id!=id);S.regs=S.regs.filter(r=>r.eid!=id);save();go("ev")}
+function vens(){return`<div class="box"><h3>Add venue</h3><div class="row"><div><label>Name</label><input id="vn"></div><div><label>Capacity</label><input id="vc" type="number" value="50"></div></div><button onclick="if(!V('vn'))return toast('Name required');S.venues.push({id:Date.now(),name:V('vn'),cap:+V('vc')||1});save();go('ven')">Save venue</button></div><div class="box">${tbl(["Venue","Capacity",""],S.venues.map(v=>[Es(v.name),v.cap,`<button class="d" onclick="S.venues=S.venues.filter(x=>x.id!=${v.id});save();go('ven')">Delete</button>`]))}</div>`}
+function stf(){return`<div class="box"><h3>Add staff / volunteer</h3><div class="row"><div><label>Name</label><input id="sn"></div><div><label>Skills (comma)</label><input id="ss" placeholder="av,yoga"></div></div><button onclick="if(!V('sn'))return toast('Name required');S.staff.push({id:Date.now(),name:V('sn'),sk:V('ss').toLowerCase().replace(/\s/g,'')});save();go('stf')">Save</button></div><div class="box">${tbl(["Name","Skills",""],S.staff.map(s=>[Es(s.name),s.sk.split(",").map(tag).join(""),`<button class="d" onclick="S.staff=S.staff.filter(x=>x.id!=${s.id});save();go('stf')">Delete</button>`]))}</div>`}
+function bk(){const q=Q.toUpperCase(),codes=S.regs.map(r=>r.code).join(" "),hit=q?rk(codes,q).map(p=>S.regs[Math.floor(p/7)]).filter(Boolean):S.regs;
+return`<div class="box"><label>Find booking code <span class="algo">Rabin-Karp rolling hash</span></label><input id="q" value="${Es(Q)}" placeholder="BK0002" oninput="Q=this.value;go('bk');$('q').focus();$('q').setSelectionRange(Q.length,Q.length)"></div><div class="box">${tbl(["Code","Event","User",""],hit.map(r=>[r.code,Es(ev(r.eid)?.name),Es(r.u),`<button class="d" onclick="cancel(${r.id})">Cancel</button>`]))}</div>`}
+function opt(){const E=S.events,cf=[];E.forEach((a,i)=>E.slice(i+1).forEach(b=>{if(a.v==b.v&&ov(a,b))cf.push([a.name,b.name])}));const cover=vc2(cf);
+const ed=[];S.staff.forEach(s=>E.forEach(e=>{if(e.sk.split(",").some(k=>k&&s.sk.split(",").includes(k)))ed.push([s.name,e.name])}));const m=match(ed),un=E.filter(e=>!m.mt[e.name]);
+const F=[];E.forEach(e=>{F.push(["S","e"+e.id,e.cap],["e"+e.id,"v"+e.v,e.cap])});S.venues.forEach(v=>F.push(["v"+v.id,"T",v.cap]));const dem=E.reduce((a,e)=>a+e.cap,0),fl=ek(F,"S","T");
+return`<div class="grid"><div class="box"><h3>Schedule conflicts</h3><span class="algo">Vertex-Cover 2-approximation</span><pre>${cf.length?Es(cf.map(c=>c.join(" ⟷ ")).join("\n")+"\n\nReschedule at least one of: "+cover.join(", ")+"\n(within 2× of the optimum)"):"No overlapping events in the same venue ✔"}</pre></div>
+<div class="box"><h3>Volunteer assignment</h3><span class="algo">Bipartite matching · König cover</span><pre>${Es(Object.entries(m.mt).map(([e,s])=>s+" → "+e).join("\n")||"No eligible matches")}\n${un.length?Es("Unstaffed: "+un.map(e=>e.name).join(", ")+"\nBottleneck set (König): "+m.cover.join(", ")):"Every event has a volunteer ✔"}</pre></div>
+<div class="box"><h3>Venue capacity analysis</h3><span class="algo">Edmonds-Karp max-flow</span><pre>Demand (event capacities): ${dem}\nMax people the venues can actually admit: ${fl}\n${fl<dem?"Venue capacity is short by "+(dem-fl)+". Shrink events or add venues.":"All events fit ✔"}</pre></div></div>`}
+boot();
+</script></body></html>
